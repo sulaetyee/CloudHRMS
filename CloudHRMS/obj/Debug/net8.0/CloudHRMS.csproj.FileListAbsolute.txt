@@ -145,3 +145,4 @@ D:\ASP.net\CloudHRMS\CloudHRMS\obj\Debug\net8.0\refint\CloudHRMS.dll
 D:\ASP.net\CloudHRMS\CloudHRMS\obj\Debug\net8.0\CloudHRMS.pdb
 D:\ASP.net\CloudHRMS\CloudHRMS\obj\Debug\net8.0\CloudHRMS.genruntimeconfig.cache
 D:\ASP.net\CloudHRMS\CloudHRMS\obj\Debug\net8.0\ref\CloudHRMS.dll
+D:\ASP.net\CloudHRMS\CloudHRMS\obj\Debug\net8.0\CloudHRMS.sourcelink.json

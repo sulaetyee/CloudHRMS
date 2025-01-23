@@ -39,9 +39,40 @@ namespace CloudHRMS.Controllers
             }
             catch (Exception)
             {
-                ViewBag.Msg = "Error occurs when Position record is created.";                
+                ViewBag.Msg = "Error occurs when Position record is created.";
             }
             return View();
+        }
+        public IActionResult List()
+        {
+            IList<PositionViewModel> positions = _hRMSDbContext.Positions.Where(w => w.IsActive == true).Select(
+                s => new PositionViewModel()
+                {
+                    Id = s.Id,
+                    Code = s.Code,
+                    Description = s.Description,
+                    Level = s.Level
+                }).ToList();
+            return View(positions);
+        }
+        public IActionResult DeletebyId(string id)
+        {
+            try
+            {
+                PositionEntity position = _hRMSDbContext.Positions.Where(w => w.IsActive && w.Id == id).SingleOrDefault();
+                if (position is not null)
+                {
+                    position.IsActive = false;
+                    _hRMSDbContext.Positions.Update(position);
+                    _hRMSDbContext.SaveChanges();
+                    TempData["Msg"] = "Position record is deleted successfully.";
+                }
+            }
+            catch (Exception ex)
+            {
+                TempData["Msg"] = "Error occurs when Position record is deleted.";
+            }
+            return RedirectToAction("List");
         }
     }
 }

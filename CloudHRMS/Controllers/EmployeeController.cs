@@ -15,7 +15,24 @@ namespace CloudHRMS.Controllers
         }
         public IActionResult List()
         {
-            return View();
+            //Retriving data from the database and covert it to the viewmodel
+            IList<EmployeeViewModel> employees = _hRMSDBContext.Employees.Where(w => w.IsActive == true).Select( //get the data from the database, retrive only essential attributes and convert it to the viewmodel
+                                                                                                        s => new EmployeeViewModel()
+                                                                                                        {
+                                                                                                            Id = s.Id,
+                                                                                                            Code = s.Code,
+                                                                                                            Name = s.Name,
+                                                                                                            Email = s.Email,
+                                                                                                            Gender = s.Gender,
+                                                                                                            DOB = s.DOB,
+                                                                                                            DOE = s.DOE,
+                                                                                                            DOR = s.DOR,
+                                                                                                            BasicSalary = s.BasicSalary,
+                                                                                                            Phone = s.Phone,
+                                                                                                            Address = s.Address,
+                                                                                                        }
+                ).ToList();
+            return View(employees);
         }
 
         public IActionResult Entry()
@@ -54,9 +71,49 @@ namespace CloudHRMS.Controllers
             catch (Exception ex)
             {
                 ViewBag.Msg = "Error occurs when Employee record is created."; //show theStatus message in English only(we don't support multi language)
-                
+
             }
             return View();
+        }
+
+        public IActionResult DeleteById(string id)
+        {
+            try
+            {
+                EmployeeEntity employee = _hRMSDBContext.Employees.Where(w => w.IsActive == true && w.Id == id).SingleOrDefault();
+                if (employee is not null)
+                {
+                    employee.IsActive = false;
+                    _hRMSDBContext.Employees.Update(employee);
+                    _hRMSDBContext.SaveChanges();
+                    TempData["Msg"] = "Employee record is deleted successfully.";
+                }
+            }
+            catch (Exception ex)
+            {
+                TempData["Msg"] = "Error occurs when Employee record is deleted.";
+            }
+            return RedirectToAction("List");
+        }
+        public IActionResult Edit(string id)
+        {
+            
+            EmployeeViewModel employee = _hRMSDBContext.Employees.Where(w => w.IsActive && w.Id == id).Select(s => new EmployeeViewModel()
+            {
+                Id = s.Id,
+                Name = s.Name,
+                Gender = s.Gender,
+                Email = s.Email,
+                Address = s.Address,
+                BasicSalary = s.BasicSalary,
+                Code = s.Code,
+                DOB = s.DOB,
+                DOE = s.DOE,
+                DOR = s.DOR,
+                Phone = s.Phone
+            }).SingleOrDefault(); 
+
+            return View(employee);
         }
     }
 }
