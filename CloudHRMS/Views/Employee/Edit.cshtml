@@ -1,0 +1,76 @@
+﻿@model CloudHRMS.Models.ViewModels.EmployeeViewModel
+@if (ViewBag.Msg != null)
+{
+    <div class="alert alert-secondary" role="alert">
+        @ViewBag.Msg
+    </div>
+}
+<div class="container mt-5">
+    <div class="card">
+        <div class="card-header text-center">
+            <h4>Employee Entry</h4>
+        </div>
+        <div class="card-body">
+            <form class="form-container" action="/employee/update" method="post">
+                <div class="mb-3">
+                    <!--Primary key Id is needed to update -->
+					<input type="hidden" name="Id" value="@Model.Id">
+                    <label for="employeeCode" class="form-label">Code</label>
+                    <input type="text" class="form-control" placeholder="Type your Code" name="Code" value="@Model.Code" readonly required>
+                </div>
+                <div class="mb-3">
+                    <label for="employeeName" class="form-label">Name</label>
+                    <input type="text" class="form-control" placeholder="Type your Name" name="Name" value="@Model.Name" required>
+                </div>
+                <div class="mb-3">
+                    <label for="employeeEmail" class="form-label">Email</label>
+                    <input type="email" class="form-control" placeholder="Type your Email" name="Email" value="@Model.Email" readonly required>
+                </div>
+                <label for="employeeGender" class="form-label">Gender</label>
+                <div class="d-flex">
+                    <div class="form-check me-3">
+                        <input class="form-check-input" type="radio" for="employeeFemale" value="f" checked name="Gender" @(Model.Gender == 'f' ? "checked" : null) required>
+                        <label class="form-check-label" for="radio1">Female</label>
+                    </div>
+                    <div class="form-check me-3">
+                        <input class="form-check-input" type="radio" for="employeeMale" value="m" name="Gender" @(Model.Gender == 'm' ? "checked" : null) required>
+                        <label class="form-check-label" for="radio2">Male</label>
+                    </div>
+                    <div class="form-check me-3">
+                        <input class="form-check-input" type="radio" for="employeeOther" value="o" name="Gender" @(Model.Gender == 'o' ? "checked" : null) required>
+                        <label class="form-check-label" for="radio3">Other</label>
+                    </div>
+                </div>
+
+
+                <div class="mb-3 mt-3">
+                    <label for="employeeDOB" class="form-label">Employee DOB</label>
+                    <input type="date" class="form-control" placeholder="Select your Birthdate" max="@DateTime.Now.Date.ToString("yyyy-MM-dd")" name="DOB" value="@Model.DOB.ToString("yyyy-MM-dd")" required>
+                </div>
+                <div class="mb-3">
+                    <label for="employeeDOE" class="form-label">Employee DOE</label>
+                    <input type="date" class="form-control" placeholder="Select your Employment Date" max="@DateTime.Now.Date.ToString("yyyy-MM-dd")" name="DOE" value="@Model.DOE.ToString("yyyy-MM-dd")" required>
+                </div>
+                <div class="mb-3">
+                    <label for="employeeDOR" class="form-label">Employee DOR</label>
+                    <input type="date" class="form-control" placeholder="Select Retirement Date" max="@DateTime.Now.Date.ToString("yyyy-MM-dd")" name="DOR" value="@Model.DOR?.ToString("yyyy-MM-dd")"> <!--in this element ? means DOR is nullable-->
+                </div>
+                <div class="mb-3">
+                    <label for="employeeBasicSalary" class="form-label">Basic Salary</label>
+                    <input type="number" class="form-control" placeholder="Type your basic Salary" name="BasicSalary" value="@Model.BasicSalary" required>
+                </div>
+                <div class="mb-3">
+                    <label for="employeePhone" class="form-label">Phone</label>
+                    <input type="tel" class="form-control" placeholder="Type your Phone no:" name="Phone" value="@Model.Phone" required>
+                </div>
+               <div class="form-floating">
+                   
+                    <textarea class="form-control" placeholder="Address" style="height: 100px" name="Address" required> @Model.Address </textarea>
+                    <label for="employeeAddress">Address</label>
+                </div>                
+                <button type="submit" class="btn btn-primary">Update</button>
+                <a href="/employee/List" role="button" class="btn btn-primary">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>

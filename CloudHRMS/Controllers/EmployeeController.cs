@@ -30,6 +30,8 @@ namespace CloudHRMS.Controllers
                                                                                                             BasicSalary = s.BasicSalary,
                                                                                                             Phone = s.Phone,
                                                                                                             Address = s.Address,
+                                                                                                            DepartmentId = s.DepartmentId,
+                                                                                                            PositionId = s.PositionId
                                                                                                         }
                 ).ToList();
             return View(employees);
@@ -58,6 +60,8 @@ namespace CloudHRMS.Controllers
                     BasicSalary = employeeViewModel.BasicSalary,
                     Phone = employeeViewModel.Phone,
                     Address = employeeViewModel.Address,
+                    DepartmentId = employeeViewModel.DepartmentId,
+                    PositionId = employeeViewModel.PositionId,
                     CreatedAt = DateTime.Now,
                     CreatedBy = "System",
                     IsActive = true,
@@ -97,7 +101,7 @@ namespace CloudHRMS.Controllers
         }
         public IActionResult Edit(string id)
         {
-            
+
             EmployeeViewModel employee = _hRMSDBContext.Employees.Where(w => w.IsActive && w.Id == id).Select(s => new EmployeeViewModel()
             {
                 Id = s.Id,
@@ -110,10 +114,45 @@ namespace CloudHRMS.Controllers
                 DOB = s.DOB,
                 DOE = s.DOE,
                 DOR = s.DOR,
-                Phone = s.Phone
-            }).SingleOrDefault(); 
+                Phone = s.Phone,
+                DepartmentId = s.DepartmentId,
+                PositionId = s.PositionId
+            }).SingleOrDefault();
 
             return View(employee);
+        }
+        [HttpPost]
+        public IActionResult Update(EmployeeViewModel employeeViewModel)
+        {
+            try
+            {
+                EmployeeEntity employee = _hRMSDBContext.Employees.Where(w => w.IsActive && w.Id == employeeViewModel.Id).SingleOrDefault();
+                if (employee is not null)
+                {
+                    employee.Name = employeeViewModel.Name;
+                    employee.Gender = employeeViewModel.Gender;
+                    employee.Address = employeeViewModel.Address;
+                    employee.BasicSalary = employeeViewModel.BasicSalary;
+                    employee.DOB = employeeViewModel.DOB;
+                    employee.DOE = employeeViewModel.DOE;
+                    employee.DOR = employeeViewModel.DOR;
+                    employee.Phone = employeeViewModel.Phone;
+                    employee.DepartmentId = employeeViewModel.DepartmentId;
+                    employee.PositionId = employeeViewModel.PositionId;
+                    //For audit purpose when the record is updated by the user
+                    employee.UpdatedAt = DateTime.Now;
+                    employee.UpdatedBy = "system";
+                    employee.Ip = NetworkHelper.GetIpAddress();
+                    _hRMSDBContext.Employees.Update(employee);
+                    _hRMSDBContext.SaveChanges();
+                    ViewBag.Msg = "Employee record is updated SUCCESSFULLY.";
+                }
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Msg = "Error occurs when Employee record is updated.";
+            }
+            return RedirectToAction("List");
         }
     }
 }

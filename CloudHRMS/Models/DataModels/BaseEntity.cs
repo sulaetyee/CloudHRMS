@@ -5,6 +5,7 @@ namespace CloudHRMS.Models.DataModels
     public abstract class BaseEntity
     {
         [Key] //model attribute to assign Id as primary key
+        [MaxLength(36)] //model attribute to set the maximum length of the Id to 36
         public required string Id { get; set; }
 
         public DateTime CreatedAt { get; set; }

@@ -74,5 +74,41 @@ namespace CloudHRMS.Controllers
             }
             return RedirectToAction("List");
         }
+        public IActionResult Edit(string Id)
+        {
+            PositionViewModel position =_hRMSDbContext.Positions.Where(w => w.IsActive && w.Id==Id).Select( s => new PositionViewModel()
+            {
+                Id= s.Id,
+                Code = s.Code,
+                Description = s.Description,
+                Level = s.Level
+            }).SingleOrDefault();
+            return View(position);
+        }
+        [HttpPost]
+        public IActionResult Update(PositionViewModel positionViewModel)
+        {
+            try
+            {
+                PositionEntity position = _hRMSDbContext.Positions.Where(w => w.IsActive && w.Id == positionViewModel.Id).SingleOrDefault();
+                if (position is not null)
+                {
+                    position.Description = positionViewModel.Description;
+                    position.Level = positionViewModel.Level;
+                    position.UpdatedBy = "system";
+                    position.UpdatedAt = DateTime.Now;
+                    position.Ip = NetworkHelper.GetIpAddress();
+                }
+                _hRMSDbContext.Positions.Update(position);
+                _hRMSDbContext.SaveChanges();
+                ViewBag.Msg = "Position record is updated SUCCESSFULLY.";
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Msg = "Error occurs when Position record is updated.";
+            }
+            return RedirectToAction("List");
+        }
+
     }
 }

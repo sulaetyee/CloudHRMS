@@ -39,7 +39,7 @@
                 <td>@item.Phone</td>
                 <td>@item.Address</td>
                 <td>
-                    <a href="">Edit</a>
+                    <a href="/employee/Edit?id=@item.Id" class="btn btn-success">Edit</a>
                     <a href="/employee/deletebyid?id=@item.Id" role="button" class="btn btn-danger" onclick="return confirm('Are you sure to delete this record?')">Delete</a></td>
             </tr>
         }                

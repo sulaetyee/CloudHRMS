@@ -20,5 +20,11 @@ namespace CloudHRMS.Models.DataModels
         [Precision(18, 2)] //Model attribute BasicSalary has been set to maximum number of integer number 18 and 2 decimal numbers.
         public required decimal BasicSalary { get; set; }
         public required string Phone { get; set; }
+        //Foreign Key in here
+        [ForeignKey(nameof(DepartmentId))] //[ForeignKey("DepartmentId")]
+        public required string DepartmentId { get; set; }
+
+        [ForeignKey(nameof(PositionId))]
+        public required string PositionId { get; set; }
     }
 }
