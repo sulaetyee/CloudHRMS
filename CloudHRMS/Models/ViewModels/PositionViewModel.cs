@@ -1,10 +1,8 @@
-﻿namespace CloudHRMS.Models.ViewModels
-{
-    public class PositionViewModel
-    {
-        public required string Id { get; set; }
-        public required string Code { get; set; }
-        public required string Description { get; set; }
-        public required int Level { get; set; }
+﻿namespace CloudHRMS.Models.ViewModels {
+    public class PositionViewModel {
+        public  string Id { get; set; }
+        public  string Code { get; set; }
+        public  string Description { get; set; }
+        public  int Level { get; set; }
     }
 }

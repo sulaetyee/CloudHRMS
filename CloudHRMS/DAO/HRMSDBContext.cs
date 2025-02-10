@@ -1,14 +1,20 @@
 ﻿using CloudHRMS.Models.DataModels;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace CloudHRMS.DAO
-{
-    public class HRMSDBContext :DbContext
+namespace CloudHRMS.DAO {
+    public class HRMSDbContext : IdentityDbContext <IdentityUser,IdentityRole, string>
     {
-        public HRMSDBContext(DbContextOptions<HRMSDBContext> db) : base(db) { }
-        //has a relationship for all of entities as DBset
-        //all the created db table entity have to be declared in here and declared names should be in plural form eg;Eployees
-        public DbSet<EmployeeEntity> Employees { get; set; } 
+        public HRMSDbContext(DbContextOptions<HRMSDbContext> db) : base(db) {
+        }
+        //Has-a Relationship for all of Entities as DBSet
+        public DbSet<EmployeeEntity> Employees { get; set; }
+        public DbSet<DepartmentEntity> Departments { get; set; }
         public DbSet<PositionEntity> Positions { get; set; }
+        public DbSet<ShiftEntity> Shifts { get; set; }
+        public DbSet<ShiftAssignEntity> ShiftAssigns { get; set; }
+        public DbSet<AttendancePolicyEntity> AttendancePolicies { get; set; }
+        public DbSet<DailyAttendanceEntity> DailyAttendances { get; set; }
     }
 }

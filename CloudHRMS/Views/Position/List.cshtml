@@ -1,17 +1,20 @@
 ﻿@model IList<CloudHRMS.Models.ViewModels.PositionViewModel>
-@if(TempData["Msg"] != null)
+<head>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+</head>
+@if (TempData["Msg"] != null)
 {
     <div class="container mt-5">
-    <!-- Success Alert -->
-    <div class="alert alert-info alert-dismissible fade show" role="alert">
-        <strong>@TempData["Msg"]</strong>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
+        <!-- Success Alert -->
+        <div class="alert alert-info alert-dismissible fade show" role="alert">
+            <strong>@TempData["Msg"]</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
     </div>
 }
 <div class="container mt-5">
     <h3 class="text-center mb-4 text-primary">Position List</h3>
-    <table class="table table-bordered table-hover table-striped">
+    <table class="table table-bordered table-hover table-striped" id="PositionTable">
         <thead class="table-dark">
             <tr>
                 <th scope="col">No</th>
@@ -38,3 +41,8 @@
         </tbody>
     </table>
 </div>
+<script>
+        $(document).ready( function () {
+        $('#PositionTable').DataTable();
+    } );
+</script>

@@ -1,111 +1,57 @@
 ﻿using CloudHRMS.DAO;
 using CloudHRMS.Models.DataModels;
 using CloudHRMS.Models.ViewModels;
-using CloudHRMS.Utility;
+using CloudHRMS.Services;
+using CloudHRMS.Utlitity;
 using Microsoft.AspNetCore.Mvc;
 
-namespace CloudHRMS.Controllers
-{
-    public class PositionController : Controller
-    {
-        private readonly HRMSDBContext _hRMSDbContext;
-        public PositionController(HRMSDBContext hRMSDBContext)
-        {
-            _hRMSDbContext = hRMSDBContext;
+namespace CloudHRMS.Controllers {
+    public class PositionController : Controller {
+        private readonly IPositionService _positionService;
+
+        public PositionController(IPositionService positionService) {
+            this._positionService = positionService;
         }
-        public IActionResult Entry()
-        {
+        public IActionResult Entry() {
             return View();
         }
         [HttpPost]
-        public IActionResult Entry(PositionViewModel positionViewModel)
-        {
-            try
-            {
-                var positionEntity = new PositionEntity()
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    Code = positionViewModel.Code,
-                    Description = positionViewModel.Description,
-                    Level = positionViewModel.Level,
-                    CreatedAt = DateTime.Now,
-                    CreatedBy = "system",
-                    IsActive = true,
-                    Ip = NetworkHelper.GetIpAddress()
-                };
-                _hRMSDbContext.Positions.Add(positionEntity);
-                _hRMSDbContext.SaveChanges();
-                ViewBag.Msg = "Position record is created successfully.";
+        public IActionResult Entry(PositionViewModel positionViewModel) {
+            try {
+                _positionService.Create(positionViewModel);
+                TempData["Msg"] = "Position record is created successfully.";
             }
-            catch (Exception)
-            {
-                ViewBag.Msg = "Error occurs when Position record is created.";
+            catch (Exception) {
+                TempData["Msg"]= "Error occurs when Position record is created.";
             }
-            return View();
+            return RedirectToAction("List");
         }
-        public IActionResult List()
-        {
-            IList<PositionViewModel> positions = _hRMSDbContext.Positions.Where(w => w.IsActive == true).Select(
-                s => new PositionViewModel()
-                {
-                    Id = s.Id,
-                    Code = s.Code,
-                    Description = s.Description,
-                    Level = s.Level
-                }).ToList();
-            return View(positions);
+        public IActionResult List() {
+            return View(_positionService.GetAll());
         }
-        public IActionResult DeletebyId(string id)
-        {
-            try
-            {
-                PositionEntity position = _hRMSDbContext.Positions.Where(w => w.IsActive && w.Id == id).SingleOrDefault();
-                if (position is not null)
-                {
-                    position.IsActive = false;
-                    _hRMSDbContext.Positions.Update(position);
-                    _hRMSDbContext.SaveChanges();
+        public IActionResult DeletebyId(string id) {
+            try {
+                _positionService.Delete(id);
                     TempData["Msg"] = "Position record is deleted successfully.";
-                }
+                
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 TempData["Msg"] = "Error occurs when Position record is deleted.";
             }
             return RedirectToAction("List");
         }
-        public IActionResult Edit(string Id)
-        {
-            PositionViewModel position =_hRMSDbContext.Positions.Where(w => w.IsActive && w.Id==Id).Select( s => new PositionViewModel()
-            {
-                Id= s.Id,
-                Code = s.Code,
-                Description = s.Description,
-                Level = s.Level
-            }).SingleOrDefault();
-            return View(position);
+        public IActionResult Edit(string Id) {
+            
+            return View(_positionService.GetById(Id));
         }
         [HttpPost]
-        public IActionResult Update(PositionViewModel positionViewModel)
-        {
-            try
-            {
-                PositionEntity position = _hRMSDbContext.Positions.Where(w => w.IsActive && w.Id == positionViewModel.Id).SingleOrDefault();
-                if (position is not null)
-                {
-                    position.Description = positionViewModel.Description;
-                    position.Level = positionViewModel.Level;
-                    position.UpdatedBy = "system";
-                    position.UpdatedAt = DateTime.Now;
-                    position.Ip = NetworkHelper.GetIpAddress();
-                }
-                _hRMSDbContext.Positions.Update(position);
-                _hRMSDbContext.SaveChanges();
-                ViewBag.Msg = "Position record is updated SUCCESSFULLY.";
+        public IActionResult Update(PositionViewModel positionViewModel) {
+            try {
+                _positionService.Update(positionViewModel);
+                TempData["Msg"]= "Position record is updated SUCCESSFULLY.";
             }
-            catch (Exception ex)
-            {
-                ViewBag.Msg = "Error occurs when Position record is updated.";
+            catch (Exception ex) {
+                TempData["Msg"] = "Error occurs when Position record is updated.";
             }
             return RedirectToAction("List");
         }

@@ -1,3 +1,8 @@
-﻿@{
-    Layout = "_Layout";
+﻿@if (User.IsInRole("HR"))
+{
+	Layout = "_LayoutHR";
+}
+else
+{
+	Layout = "_Layout";
 }

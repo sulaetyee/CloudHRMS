@@ -1,28 +1,25 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
-
-namespace CloudHRMS.Models.ViewModels
-{
-    public class EmployeeViewModel
-    {
-        public required string Id { get; set; }
-        public required string Code { get; set; }
-        public required string Name { get; set; }
-        public required string Email { get; set; }
-
-        public required char Gender { get; set; }
-        public required DateTime DOB { get; set; }
-        public required DateTime DOE { get; set; }
+﻿namespace CloudHRMS.Models.ViewModels {
+    public class EmployeeViewModel {
+        public string Id { get; set; }//for delete and update porpose.
+        public string Code { get; set; }
+        public string Name { get; set; }
+        public string Email { get; set; }
+        public char Gender { get; set; }
+        public DateTime DOB { get; set; }
+        public DateTime DOE { get; set; }
         public DateTime? DOR { get; set; }
-        public required string Address { get; set; }
+        public string Address { get; set; }
+        public decimal BasicSalary { get; set; }
+        public string Phone { get; set; }
 
-        public required decimal BasicSalary { get; set; }
-        public required string Phone { get; set; }
+        //forgein key in here.
+        public string DepartmentId { get; set; } // for update 
+        public string DepartmentInfo { get; set; } //for show the values 
 
-        public required string DepartmentId { get; set; }
-        public string DepartmentInfo { get; set; }
-        public required string PositionId { get; set; }
-        public string PositionInfo { get; set; }
+        public string PositionId { get; set; }
+        public string PositionInfo { get; set; } //for show the values 
 
+      public  IList<PositionViewModel> PositionViewModels {get;set;}
+        public IList<DepartmentViewModel> DepartmentViewModels {get;set;}
     }
 }

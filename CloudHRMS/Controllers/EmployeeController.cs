@@ -1,156 +1,190 @@
 ﻿using CloudHRMS.DAO;
 using CloudHRMS.Models.DataModels;
 using CloudHRMS.Models.ViewModels;
-using CloudHRMS.Utility;
+using CloudHRMS.Utlitity;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-
 namespace CloudHRMS.Controllers
 {
     public class EmployeeController : Controller
     {
-        private readonly HRMSDBContext _hRMSDBContext;
-        public EmployeeController(HRMSDBContext hRMSDBContext)
+
+        private readonly HRMSDbContext _hRMSDbContext;
+        public EmployeeController(HRMSDbContext hRMSDbContext)
         {
-            _hRMSDBContext = hRMSDBContext;
+            _hRMSDbContext = hRMSDbContext;
         }
+        [Authorize(Roles = "HR,Employee")]
+        //Reterived : Employee List
         public IActionResult List()
         {
-            //Retriving data from the database and covert it to the viewmodel
-            IList<EmployeeViewModel> employees = _hRMSDBContext.Employees.Where(w => w.IsActive == true).Select( //get the data from the database, retrive only essential attributes and convert it to the viewmodel
-                                                                                                        s => new EmployeeViewModel()
-                                                                                                        {
-                                                                                                            Id = s.Id,
-                                                                                                            Code = s.Code,
-                                                                                                            Name = s.Name,
-                                                                                                            Email = s.Email,
-                                                                                                            Gender = s.Gender,
-                                                                                                            DOB = s.DOB,
-                                                                                                            DOE = s.DOE,
-                                                                                                            DOR = s.DOR,
-                                                                                                            BasicSalary = s.BasicSalary,
-                                                                                                            Phone = s.Phone,
-                                                                                                            Address = s.Address,
-                                                                                                            DepartmentId = s.DepartmentId,
-                                                                                                            PositionId = s.PositionId
-                                                                                                        }
-                ).ToList();
+            //DTO >> data transfer object process in here  (Data Model =>viewModel)
+            IList<EmployeeViewModel> employees = (from e in _hRMSDbContext.Employees join
+                                                        d in _hRMSDbContext.Departments
+                                                        on e.DepartmentId equals d.Id join
+                                                        p in _hRMSDbContext.Positions
+                                                        on e.PositionId equals p.Id
+                                                  where e.IsActive && d.IsActive && p.IsActive
+                                                  select new EmployeeViewModel()
+                                                  //_hRMSDbContext.Employees.Where(w => w.IsActive).Select(s => new EmployeeViewModel()
+                                                  {
+                                                      Id = e.Id,//for delete and update porpose.
+                                                      Code = e.Code,
+                                                      Name = e.Name,
+                                                      Address = e.Address,
+                                                      BasicSalary = e.BasicSalary,
+                                                      DOE = e.DOE,
+                                                      DOB = e.DOB,
+                                                      DOR = e.DOR,
+                                                      Email = e.Email,
+                                                      Phone = e.Phone,
+                                                      Gender = e.Gender,
+                                                      PositionId = e.PositionId,
+                                                      DepartmentId = e.DepartmentId,
+                                                      PositionInfo = p.Code + " / " + p.Description,
+                                                      DepartmentInfo = d.Code + " / " + d.Description
+                                                  }).ToList();
             return View(employees);
         }
-
+        [Authorize(Roles = "HR")]
+        //C:Create 
         public IActionResult Entry()
         {
-            return View();
+            EmployeeViewModel employeeViewModel = new EmployeeViewModel();
+            employeeViewModel.PositionViewModels = _hRMSDbContext.Positions.Where(w => w.IsActive).Select(s => new PositionViewModel
+            {
+                Id = s.Id,
+                Code = s.Code
+            }).ToList();
+            employeeViewModel.DepartmentViewModels = _hRMSDbContext.Departments.Where(w => w.IsActive).Select(s => new DepartmentViewModel
+            {
+                Id = s.Id,
+                Code = s.Code
+            }).ToList();
+            return View(employeeViewModel);
         }
+        [Authorize(Roles = "HR")]
         [HttpPost]
         public IActionResult Entry(EmployeeViewModel employeeViewModel)
         {
-            //DTO => data transfer object process in here
             try
             {
+                //DTO >> data transfer object process in here .
                 var employeeEntity = new EmployeeEntity()
                 {
-                    Id = Guid.NewGuid().ToString(),
+                    Id = Guid.NewGuid().ToString(),//for primary key auto generation
                     Code = employeeViewModel.Code,
                     Name = employeeViewModel.Name,
                     Email = employeeViewModel.Email,
-                    Gender = employeeViewModel.Gender,
-                    DOB = employeeViewModel.DOB,
                     DOE = employeeViewModel.DOE,
+                    DOB = employeeViewModel.DOB,
                     DOR = employeeViewModel.DOR,
-                    BasicSalary = employeeViewModel.BasicSalary,
                     Phone = employeeViewModel.Phone,
                     Address = employeeViewModel.Address,
-                    DepartmentId = employeeViewModel.DepartmentId,
+                    BasicSalary = employeeViewModel.BasicSalary,
+                    Gender = employeeViewModel.Gender,
                     PositionId = employeeViewModel.PositionId,
+                    DepartmentId = employeeViewModel.DepartmentId,
+                    //for audit purpose column
                     CreatedAt = DateTime.Now,
-                    CreatedBy = "System",
+                    CreatedBy = "system",
                     IsActive = true,
                     Ip = NetworkHelper.GetIpAddress()
-
                 };
-                _hRMSDBContext.Employees.Add(employeeEntity);//collect the entity to the context
-                _hRMSDBContext.SaveChanges();//actually save the data to the database
-                ViewBag.Msg = "Employee record is created successfully.";
+                _hRMSDbContext.Employees.Add(employeeEntity);//collect the entity to the context
+                _hRMSDbContext.SaveChanges();//actually save the data to the database
+                TempData["Msg"] = "Employee record is created successfully.";
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                ViewBag.Msg = "Error occurs when Employee record is created."; //show theStatus message in English only(we don't support multi language)
-
-            }
-            return View();
-        }
-
-        public IActionResult DeleteById(string id)
-        {
-            try
-            {
-                EmployeeEntity employee = _hRMSDBContext.Employees.Where(w => w.IsActive == true && w.Id == id).SingleOrDefault();
-                if (employee is not null)
-                {
-                    employee.IsActive = false;
-                    _hRMSDBContext.Employees.Update(employee);
-                    _hRMSDBContext.SaveChanges();
-                    TempData["Msg"] = "Employee record is deleted successfully.";
-                }
-            }
-            catch (Exception ex)
-            {
-                TempData["Msg"] = "Error occurs when Employee record is deleted.";
+                TempData["Msg"] = "Error occurs when employee record is created.";//show the Status messages in ENGLISH ONLY (we don't support multi-languages)
             }
             return RedirectToAction("List");
         }
+        [Authorize(Roles = "HR")]
+        //D: Delete
+        public IActionResult DeleteById(string id)
+        {//1
+            try
+            {
+                EmployeeEntity employee = _hRMSDbContext.Employees.Where(w => w.IsActive && w.Id == id).SingleOrDefault();
+                if (employee is not null)
+                {
+                    employee.IsActive = false;
+                    _hRMSDbContext.Employees.Update(employee);
+                    _hRMSDbContext.SaveChanges();
+                    TempData["Msg"] = "Employee record is deleted successfully.";
+                }
+            }
+            catch (Exception e)
+            {
+                TempData["Msg"] = "Error occurs when employee record is deleted.";
+            }
+            return RedirectToAction("List");
+        }
+        [Authorize(Roles = "HR")]
+        //U:Update
         public IActionResult Edit(string id)
         {
-
-            EmployeeViewModel employee = _hRMSDBContext.Employees.Where(w => w.IsActive && w.Id == id).Select(s => new EmployeeViewModel()
+            EmployeeViewModel employee = _hRMSDbContext.Employees.Where(w => w.IsActive && w.Id == id).Select(s => new EmployeeViewModel()
             {
-                Id = s.Id,
+                Id = s.Id,//for delete and update porpose.
+                Code = s.Code,
                 Name = s.Name,
-                Gender = s.Gender,
-                Email = s.Email,
                 Address = s.Address,
                 BasicSalary = s.BasicSalary,
-                Code = s.Code,
-                DOB = s.DOB,
                 DOE = s.DOE,
+                DOB = s.DOB,
                 DOR = s.DOR,
+                Email = s.Email,
                 Phone = s.Phone,
-                DepartmentId = s.DepartmentId,
-                PositionId = s.PositionId
+                Gender = s.Gender,
+                PositionId = s.PositionId,
+                DepartmentId = s.DepartmentId
             }).SingleOrDefault();
-
+            employee.PositionViewModels = _hRMSDbContext.Positions.Where(w => w.IsActive).Select(s => new PositionViewModel
+            {
+                Id = s.Id,
+                Code = s.Code
+            }).ToList();
+            employee.DepartmentViewModels = _hRMSDbContext.Departments.Where(w => w.IsActive).Select(s => new DepartmentViewModel
+            {
+                Id = s.Id,
+                Code = s.Code
+            }).ToList();
             return View(employee);
         }
+        [Authorize(Roles = "HR")]
         [HttpPost]
         public IActionResult Update(EmployeeViewModel employeeViewModel)
         {
             try
             {
-                EmployeeEntity employee = _hRMSDBContext.Employees.Where(w => w.IsActive && w.Id == employeeViewModel.Id).SingleOrDefault();
+                EmployeeEntity employee = _hRMSDbContext.Employees.Where(w => w.IsActive && w.Id == employeeViewModel.Id).SingleOrDefault();
                 if (employee is not null)
                 {
                     employee.Name = employeeViewModel.Name;
-                    employee.Gender = employeeViewModel.Gender;
                     employee.Address = employeeViewModel.Address;
                     employee.BasicSalary = employeeViewModel.BasicSalary;
-                    employee.DOB = employeeViewModel.DOB;
                     employee.DOE = employeeViewModel.DOE;
+                    employee.DOB = employeeViewModel.DOB;
                     employee.DOR = employeeViewModel.DOR;
                     employee.Phone = employeeViewModel.Phone;
-                    employee.DepartmentId = employeeViewModel.DepartmentId;
-                    employee.PositionId = employeeViewModel.PositionId;
-                    //For audit purpose when the record is updated by the user
+                    employee.Gender = employeeViewModel.Gender;
+                    //for audit purpose when update the recrod by the user.
                     employee.UpdatedAt = DateTime.Now;
                     employee.UpdatedBy = "system";
                     employee.Ip = NetworkHelper.GetIpAddress();
-                    _hRMSDBContext.Employees.Update(employee);
-                    _hRMSDBContext.SaveChanges();
-                    ViewBag.Msg = "Employee record is updated SUCCESSFULLY.";
+                    employee.DepartmentId=employeeViewModel.DepartmentId;
+                    employee.PositionId=employeeViewModel.PositionId;
+                    _hRMSDbContext.Employees.Update(employee);
+                    _hRMSDbContext.SaveChanges();
+                    TempData["Msg"] = "Employee record is updated successfully.";
                 }
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                ViewBag.Msg = "Error occurs when Employee record is updated.";
+                TempData["Msg"] = "Error occurs when employee record is updated.";
             }
             return RedirectToAction("List");
         }
