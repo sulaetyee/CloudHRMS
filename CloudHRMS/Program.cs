@@ -28,6 +28,7 @@ builder.Services.AddTransient<IShiftService, ShiftService>();
 builder.Services.AddTransient<IShiftAssignService, ShiftAssignService>();
 builder.Services.AddTransient<IAttendancePolicyServices, AttendancePolicyServices>();
 builder.Services.AddTransient<IDailyAttendanceService, DailyAttendanceService>();
+builder.Services.AddTransient<IUserService, UserService>();
 var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment()) {

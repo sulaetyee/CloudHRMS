@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Daily Attendance Form</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
 </head>
 <body>
 
@@ -45,22 +46,18 @@
 
                     }
                 </select>
-                <div class="form-group">
+                <!--<div class="form-group">
                     <label for="name">Employee </label>
                     <input type="date" class="form-control" id="attendanceDate" name="attendanceDate" placeholder="Enter the name of AttendancePolicy" required>
-                </div>
+                </div>--> 
             </div>
             <div class="form-group">
                 <label for="employees" class="form-label">Employee </label>
 
                 <select class="form-select" name="employeeId" id="employeeId">
-                    <option class="form-select" value="" selected>-- SELECT ONE --</option>
-                    @foreach (var item in Model.Employees)
-                    {
-
-                        <option class="form-select" value="@item.Id">@(item.Code + "-" + item.Name)</option>
-
-                    }
+                    <option class="form-select" value="" >-- SELECT ONE --</option>
+					
+                    
                 </select>
 
             </div>
@@ -75,11 +72,29 @@
 </body>
 </html>
 <script>
-    $('#departmentId').on('click',function(){
+    $('#departmentId').on('change',function(){
+        console.log("1 Okay");
             var url = '/dailyAttendance/getEmployeeList';
 			var departmentId = $('#departmentId').val();
-            $.get(url,departmentId,function(res){
-				console.log("Okay");
+            console.log(departmentId);
+            $.ajax({
+                    type: 'POST',
+                    dataType: 'JSON',
+                    url: url,
+                    data:{departmentId:$('#departmentId').val()} ,
+                    success: function (res) {
+                        console.log(res);
+     
+
+
+                    $.each(res.items, function(i,item){
+                // Create and append the new options into the select list
+                $("#employeeId").append("<option value="+item.id+">"+item.Name+"</option>");
             });
+                    },
+                    error: function (err) {
+                        alert('error while processing the request');
+                    }
+                });
         });
 </script>

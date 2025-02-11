@@ -556,13 +556,13 @@
       <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\CloudHRMS.89da6jizu2.bundle.scp.css'))</AssetFile>
       <Selectors><![CDATA[[]]]></Selectors>
       <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"89da6jizu2"},{"Name":"integrity","Value":"sha256-nDPDtAmDR1lWmmD\u002BJ8FKUdHsapI3zAk5WAOihVRtfHE="},{"Name":"label","Value":"_content/CloudHRMS/CloudHRMS.bundle.scp.css"}]]]></EndpointProperties>
-      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"2256"},{"Name":"Content-Type","Value":"text/css"},{"Name":"ETag","Value":"\u0022nDPDtAmDR1lWmmD\u002BJ8FKUdHsapI3zAk5WAOihVRtfHE=\u0022"},{"Name":"Last-Modified","Value":"Mon, 10 Feb 2025 09:17:08 GMT"}]]]></ResponseHeaders>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"2256"},{"Name":"Content-Type","Value":"text/css"},{"Name":"ETag","Value":"\u0022nDPDtAmDR1lWmmD\u002BJ8FKUdHsapI3zAk5WAOihVRtfHE=\u0022"},{"Name":"Last-Modified","Value":"Tue, 11 Feb 2025 12:17:22 GMT"}]]]></ResponseHeaders>
     </StaticWebAssetEndpoint>
     <StaticWebAssetEndpoint Include="_content/CloudHRMS/CloudHRMS.bundle.scp.css">
       <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\CloudHRMS.89da6jizu2.bundle.scp.css'))</AssetFile>
       <Selectors><![CDATA[[]]]></Selectors>
       <EndpointProperties><![CDATA[[{"Name":"integrity","Value":"sha256-nDPDtAmDR1lWmmD\u002BJ8FKUdHsapI3zAk5WAOihVRtfHE="}]]]></EndpointProperties>
-      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"no-cache"},{"Name":"Content-Length","Value":"2256"},{"Name":"Content-Type","Value":"text/css"},{"Name":"ETag","Value":"\u0022nDPDtAmDR1lWmmD\u002BJ8FKUdHsapI3zAk5WAOihVRtfHE=\u0022"},{"Name":"Last-Modified","Value":"Mon, 10 Feb 2025 09:17:08 GMT"}]]]></ResponseHeaders>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"no-cache"},{"Name":"Content-Length","Value":"2256"},{"Name":"Content-Type","Value":"text/css"},{"Name":"ETag","Value":"\u0022nDPDtAmDR1lWmmD\u002BJ8FKUdHsapI3zAk5WAOihVRtfHE=\u0022"},{"Name":"Last-Modified","Value":"Tue, 11 Feb 2025 12:17:22 GMT"}]]]></ResponseHeaders>
     </StaticWebAssetEndpoint>
     <StaticWebAssetEndpoint Include="_content/CloudHRMS/css/site.c2tiyv64ts.css">
       <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\css\site.css'))</AssetFile>

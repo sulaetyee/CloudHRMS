@@ -13,22 +13,19 @@ namespace CloudHRMS.Controllers
         {
             this._dailyAttendanceService = dailyAttendanceService;
         }
-        public DailyAttendanceController(IList<DepartmentViewModel> departments, IList<EmployeeViewModel> employees)
-        {
-            Departments = Departments;
-            Employees = Employees;
-        }
+        
         public IActionResult Entry()
         {
-            Departments = _dailyAttendanceService.GetDepartments();
-
-            return View();
+            IList<DepartmentViewModel> departmentList = _dailyAttendanceService.GetDepartments();
+            DailyAttendanceViewModel dailyAttendance = new DailyAttendanceViewModel() { Departments = departmentList };
+            return View(dailyAttendance);
         }
+        [HttpPost]
         public JsonResult GetEmployeeList(string departmentId)
         {
             IList<EmployeeViewModel> employeeList = _dailyAttendanceService.GetEmployeeList(departmentId);
             DailyAttendanceViewModel dailyAttendance = new DailyAttendanceViewModel() { Employees = employeeList };
-            return Json(dailyAttendance);
+            return Json(employeeList);
         }
         [HttpPost]
         public IActionResult Entry(DailyAttendanceViewModel dailyAttendanceViewModel)

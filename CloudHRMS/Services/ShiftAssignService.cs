@@ -59,29 +59,52 @@ namespace CloudHRMS.Services
         }
         public IEnumerable<ShiftAssignViewModel> GetAll()
         {
-            IList<ShiftAssignViewModel> shiftAssigns = _unitOfWork.ShiftAssignRepository.GetAll(w => w.IsActive)
-                .Select(x => new ShiftAssignViewModel
-                {
-                    Id = x.Id,
-                    EmployeeId = x.EmployeeId,
-                    ShiftId = x.ShiftId,
-                    FromDate = x.FromDate,
-                    ToDate = x.ToDate
-                }).ToList();
+            IList<ShiftAssignViewModel> shiftAssigns = (from S in _unitOfWork.ShiftAssignRepository.GetAll(w => w.IsActive)
+                                                        join a in _unitOfWork.EmployeeRepository.GetAll(w => w.IsActive)
+                                                        on S.EmployeeId equals a.Id
+                                                        join sh in _unitOfWork.ShiftRepository.GetAll(w => w.IsActive)
+                                                        on S.ShiftId equals sh.Id
+                                                        select new ShiftAssignViewModel
+                                                     
+                                                        {
+                                                            Id = S.Id,
+                                                            EmployeeId = S.EmployeeId,
+                                                            ShiftId = S.ShiftId,
+                                                            FromDate = S.FromDate,
+                                                            ToDate = S.ToDate,
+                                                            EmployeeName = a.Name,
+                                                            ShiftName = sh.Name
+                                                        }).ToList();
             return shiftAssigns;
         }
         public ShiftAssignViewModel GetBy(string Id)
         {
-            ShiftAssignViewModel shiftAssignViewModel = _unitOfWork.ShiftAssignRepository.GetBy(w => w.IsActive && w.Id == Id).Select(s => new ShiftAssignViewModel
-            {
-                Id = s.Id,
-                EmployeeId = s.EmployeeId,
-                ShiftId = s.ShiftId,
-                FromDate = s.FromDate,
-                ToDate = s.ToDate
-            }).SingleOrDefault();
+            ShiftAssignViewModel shiftAssignViewModel = (from S in _unitOfWork.ShiftAssignRepository.GetAll(w => w.IsActive)
+                                                         join a in _unitOfWork.EmployeeRepository.GetAll(w => w.IsActive)
+                                                         on S.EmployeeId equals a.Id
+                                                         join sh in _unitOfWork.ShiftRepository.GetAll(w => w.IsActive)
+                                                         on S.ShiftId equals sh.Id
+                                                         select new ShiftAssignViewModel {
+                                                             Id = S.Id,
+                                                             EmployeeId = S.EmployeeId,
+                                                             ShiftId = S.ShiftId,
+                                                             FromDate = S.FromDate,
+                                                             ToDate = S.ToDate,
+                                                             EmployeeName = a.Name,
+                                                             ShiftName = sh.Name
+                                                         }).SingleOrDefault();
             return shiftAssignViewModel;
         }
+
+        public IList<EmployeeViewModel> GetEmployeeViewModelsList()
+        {
+            return _unitOfWork.EmployeeRepository.GetAll(w => w.IsActive).Select(e => new EmployeeViewModel
+            {
+                Id = e.Id,
+                Name = e.Name
+            }).ToList();
+        }
+
         public void Update(ShiftAssignViewModel entity)
         {
             try

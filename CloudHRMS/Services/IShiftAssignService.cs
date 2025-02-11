@@ -9,5 +9,6 @@ namespace CloudHRMS.Services
         ShiftAssignViewModel GetBy(string Id);
         void Update(ShiftAssignViewModel entity);
         void Delete(string id);
+        public IList<EmployeeViewModel> GetEmployeeViewModelsList();
     }
 }

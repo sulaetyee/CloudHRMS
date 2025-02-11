@@ -1,4 +1,5 @@
-﻿using CloudHRMS.Models.ViewModels;
+﻿using System.Security.Claims;
+using CloudHRMS.Models.ViewModels;
 using CloudHRMS.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,14 +8,27 @@ namespace CloudHRMS.Controllers
     public class ShiftAssignController : Controller
     {
         private readonly IShiftAssignService _shiftAssignService;
+        private readonly IEmployeeService _employeeService;
+        private readonly IShiftService _shiftService;
 
-        public ShiftAssignController(IShiftAssignService shiftAssignService)
+        public ShiftAssignController(IShiftAssignService shiftAssignService,IEmployeeService employeeService,IShiftService shiftService)
         {
             this._shiftAssignService = shiftAssignService;
+            this._employeeService = employeeService;
+            this._shiftService = shiftService;
         }
         public IActionResult Entry()
         {
-            return View();
+            ShiftAssignViewModel shiftAssignViewModel = new ShiftAssignViewModel();
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            shiftAssignViewModel.Employees = _shiftAssignService.GetEmployeeViewModelsList();
+            shiftAssignViewModel.Shifts = _shiftService.GetAll().Select(s => new ShiftViewModel
+            {
+                Id = s.Id,
+                Name = s.Name
+            }).ToList();
+           
+            return View(shiftAssignViewModel);
         }
         [HttpPost]
         public IActionResult Entry(ShiftAssignViewModel shiftAssignViewModel)
@@ -50,7 +64,16 @@ namespace CloudHRMS.Controllers
         }
         public IActionResult Edit(string Id)
         {
-            return View(_shiftAssignService.GetBy(Id));
+            ShiftAssignViewModel shiftAssignViewModel = _shiftAssignService.GetBy(Id);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            shiftAssignViewModel.Employees = _shiftAssignService.GetEmployeeViewModelsList();
+            shiftAssignViewModel.Shifts = _shiftService.GetAll().Select(s => new ShiftViewModel
+            {
+                Id = s.Id,
+                Name = s.Name
+            }).ToList();
+            return View(shiftAssignViewModel);
         }
         [HttpPost]
         public IActionResult Update(ShiftAssignViewModel shiftAssignViewModel)

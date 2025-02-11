@@ -14,7 +14,7 @@ namespace CloudHRMS.Services
         {
             this._unitOfWork = unitOfWork;
         }
-        public void Create(PositionViewModel positionViewModel)
+        public PositionViewModel Create(PositionViewModel positionViewModel)
         {
             try
             {
@@ -31,10 +31,12 @@ namespace CloudHRMS.Services
                 };
                 _unitOfWork.PositionRepository.Create(positionEntity);
                 _unitOfWork.Commit();
+                return positionViewModel;
             }
             catch (Exception)
             {
                 _unitOfWork.Rollback();
+                throw new Exception("Error!!");
             }
         }
 
@@ -83,7 +85,7 @@ namespace CloudHRMS.Services
             return position;
         }
 
-        public void Update(PositionViewModel positionViewModel)
+        public PositionViewModel Update(PositionViewModel positionViewModel)
         {
             try
             {
@@ -98,10 +100,12 @@ namespace CloudHRMS.Services
                 }
                 _unitOfWork.PositionRepository.Update(position);
                 _unitOfWork.Commit();
+                return positionViewModel;
             }
             catch (Exception ex)
             {
                 _unitOfWork.Rollback();
+                throw new Exception("Error");
             }
         }
     }

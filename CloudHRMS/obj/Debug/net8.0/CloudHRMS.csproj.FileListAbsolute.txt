@@ -305,8 +305,8 @@ D:\Programming\Git Test\EWAD6\CloudHRMS\CloudHRMS\obj\Debug\net8.0\CloudHRMS.gen
 D:\Programming\Git Test\EWAD6\CloudHRMS\CloudHRMS\obj\Debug\net8.0\ref\CloudHRMS.dll
 D:\Programming Pj Folder\Su Git PJ\CloudHRMS\CloudHRMS\bin\Debug\net8.0\appsettings.Development.json
 D:\Programming Pj Folder\Su Git PJ\CloudHRMS\CloudHRMS\bin\Debug\net8.0\appsettings.json
-D:\Programming Pj Folder\Su Git PJ\CloudHRMS\CloudHRMS\bin\Debug\net8.0\CloudHRMS.staticwebassets.endpoints.json
 D:\Programming Pj Folder\Su Git PJ\CloudHRMS\CloudHRMS\bin\Debug\net8.0\CloudHRMS.staticwebassets.runtime.json
+D:\Programming Pj Folder\Su Git PJ\CloudHRMS\CloudHRMS\bin\Debug\net8.0\CloudHRMS.staticwebassets.endpoints.json
 D:\Programming Pj Folder\Su Git PJ\CloudHRMS\CloudHRMS\bin\Debug\net8.0\CloudHRMS.exe
 D:\Programming Pj Folder\Su Git PJ\CloudHRMS\CloudHRMS\bin\Debug\net8.0\CloudHRMS.deps.json
 D:\Programming Pj Folder\Su Git PJ\CloudHRMS\CloudHRMS\bin\Debug\net8.0\CloudHRMS.runtimeconfig.json

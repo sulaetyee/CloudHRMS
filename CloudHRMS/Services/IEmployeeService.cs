@@ -5,11 +5,11 @@ namespace CloudHRMS.Services
 {
     public interface IEmployeeService
     {
-        void Create(EmployeeViewModel employeeViewModel);
-        IEnumerable<EmployeeViewModel> GetAll();
+        IEnumerable<EmployeeDetailModel> DetailBy(string fromCode, string toCode);
+        Task Create(EmployeeViewModel employeeViewModel);
+        Task<IList<EmployeeViewModel>> GetAll(string userId);
         EmployeeViewModel GetById(string id);
         void Update(EmployeeViewModel employeeViewModel);
         bool Delete(string id);
-        public IEnumerable<EmployeeDetailModel> DetailBy(string fromCode, string toCode);
     }
 }

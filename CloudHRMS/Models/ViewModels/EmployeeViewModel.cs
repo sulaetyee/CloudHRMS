@@ -10,6 +10,7 @@
         public DateTime? DOR { get; set; }
         public string Address { get; set; }
         public decimal BasicSalary { get; set; }
+        public string UserId { get; set; }
         public string Phone { get; set; }
 
         //forgein key in here.
